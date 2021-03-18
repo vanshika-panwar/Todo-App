@@ -4,25 +4,55 @@ import Action from './Action';
 import Header from './Header';
 import Options from './Options';
 import OptionModal from './OptionModal';
+import WarningModal from './WarningModal';
 
 export default class IndecisionApp extends React.Component {
   state = {
     options: [],
     selectedOption: undefined,
+    completed:[],
+    invaliddeletion:undefined
     
     
   };
   handleDeleteOptions = () => {
-    this.setState(() => ({ options: [] }));
+
+    this.setState((prevState) => ({ 
+      options: prevState.options.filter((option) => !prevState.completed.includes(option)) 
+    }));
   };
   handleClearSelectedOption = () => {
     this.setState(() => ({ selectedOption: undefined }));
   }
+  handleClearInvalidOption=()=>{
+    console.log(this.state.invaliddeletion)
+    this.setState(() => ({ invaliddeletion: undefined }));
+    console.log(this.state.invaliddeletion)
+  }
   handleDeleteOption = (optionToRemove) => {
+    if(this.state.completed.includes(optionToRemove))
+    {
     this.setState((prevState) => ({
       options: prevState.options.filter((option) => optionToRemove !== option)
+
     }));
+    console.log('deleting')
+  }
+  else{
+    console.log('this can not be deleted')
+    this.setState(() => ({ invaliddeletion: optionToRemove }));
+    
+  }
   };
+  handleCompletedOptions=(complete)=>{
+    //console.log(complete)
+    this.setState((prevState) => ({
+      
+    completed: prevState.completed.concat(complete)
+    //completed:prevState.completed+complete
+     }));
+    console.log(this.state.completed)
+  }
   handlePick = () => {
     const randomNum = Math.floor(Math.random() * this.state.options.length);
     const option = this.state.options[randomNum];
@@ -30,6 +60,7 @@ export default class IndecisionApp extends React.Component {
       selectedOption: option
     }));
   };
+  
   handleAddOption = (option) => {
     if (!option) {
       return 'Enter valid value to add item';
@@ -63,7 +94,7 @@ export default class IndecisionApp extends React.Component {
     console.log('componentWillUnmount');
   }
   render() {
-    const subtitle = 'Put your life in the hands of a computer';
+    const subtitle = '';
 
     return (
       <div>
@@ -78,6 +109,7 @@ export default class IndecisionApp extends React.Component {
               options={this.state.options}
               handleDeleteOptions={this.handleDeleteOptions}
               handleDeleteOption={this.handleDeleteOption}
+              handleCompletedOptions={this.handleCompletedOptions}
             />
             <AddOption
               handleAddOption={this.handleAddOption}
@@ -87,6 +119,10 @@ export default class IndecisionApp extends React.Component {
         <OptionModal
           selectedOption={this.state.selectedOption}
           handleClearSelectedOption={this.handleClearSelectedOption}
+        />
+        <WarningModal
+         invaliddeletion={this.state.invaliddeletion}
+         handleClearInvalidOption={this.handleClearInvalidOption}
         />
       </div>
     );
