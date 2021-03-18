@@ -8,7 +8,7 @@
     "serve": "live-server public/",
     "build": "webpack",
     "dev-server": "webpack-dev-server",
-    "start":"yarn run dev-server"
+    "start":" PORT=8080 yarn run dev-server"
   },
   "dependencies": {
     "babel-cli": "6.24.1",
