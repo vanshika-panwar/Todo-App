@@ -1,1 +1,1 @@
-worker:yarn run dev-server
+web: npm start
